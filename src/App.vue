@@ -39,7 +39,10 @@ const addHabit =()=>{
         <ul>
             <p>Your habit list:</p>
             <li v-for="value in habitList" :key="value.id" class="item">
-            {{ value.title }}
+                <input type="checkbox" v-model="value.done">
+                <span :class="{done: value.done}">
+                    {{ value.title }}
+                </span>
             </li>
         </ul>
     </div>
@@ -53,7 +56,7 @@ const addHabit =()=>{
     align-items: center;
     flex-direction: column;
     justify-content: center;
-    min-height: 50vh;
+    min-height: 100vh;
 }
 
 .app-card{
@@ -63,6 +66,9 @@ const addHabit =()=>{
     border-radius: 10px;
     text-align: center;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
 
 h1{
@@ -75,9 +81,7 @@ input{
     padding:12px;
     border-radius: 9px;
     border: 1px solid rgb(11, 7, 40);
-    margin-bottom: 13px;
     font-size: 20px;
-    text-align: center;
 }
 
 button{
@@ -109,17 +113,30 @@ ul{
 }
 
 .item{
-    padding: 11px;
-    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    margin: 5px 0;
     background: #0e173f;
     color: white;
     border-radius: 8px;
-    font-size: 22px;
+    font-size: 18px;
+}
+
+.item:hover{
+    transform: translate(-2px);
+    transition: 0.3s;
 }
 
 .empty{
     color: #0e173f;
     font-size: 20px;
     margin-bottom: 11px;
+}
+
+.done{
+    text-decoration: line-through;
+    opacity: 0.5;
 }
 </style>
