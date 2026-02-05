@@ -77,7 +77,7 @@ h1{
 }
 
 input{
-    width: 100%;
+    /* width: 100%; */
     padding:12px;
     border-radius: 9px;
     border: 1px solid rgb(11, 7, 40);
@@ -115,9 +115,9 @@ ul{
 .item{
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 7px;
     padding: 10px;
-    margin: 5px 0;
+    margin: 8px auto;
     background: #0e173f;
     color: white;
     border-radius: 8px;
@@ -127,6 +127,11 @@ ul{
 .item:hover{
     transform: translate(-2px);
     transition: 0.3s;
+}
+
+.item input[type="checkbox"]{
+    transform: scale(1.2);
+    cursor: pointer;
 }
 
 .empty{
