@@ -1,10 +1,13 @@
 <script setup>
-import { ref } from 'vue';
+import { ref , computed , onMounted , watch} from 'vue';
 const title = ref('Habit Tracker');
 const habit = ref('')
 
 const habitList = ref([
 ]);
+
+const saveStatus = ref('Saved ✓');
+const showStatus = ref(false);
 
 const addHabit =()=>{
     const value = habit.value.trim();
@@ -14,11 +17,72 @@ const addHabit =()=>{
     habitList.value.push({
         id: Date.now(),
         title: value,
-        done: false
+        done: false,
+        lastCompleted : null,
+        streak : 0
     });
 
     habit.value = "";
 }
+
+
+function deleteHabit(id) {
+    return habitList.value = habitList.value.filter(h => h.id !== id);
+}
+
+// const completedHabits= computed(()=>{
+//     habitList.value.filter(h=> h.done).length;
+// });
+
+// const remainingCount = ()=>{
+//     habitList.value.length - completedHabits()
+// }
+
+function updateStreak(habit){
+    if(!habit.done) return;
+
+    const today = new Date().toDateString();
+    const last = habit.lastCompleted;
+
+    if(!last){
+        habit.streak = 1;
+    }
+    else{
+        const diff = 
+        (new Date(today) - new Date(last)) / (1000*60*60*24);
+
+        if(diff === 1){
+            habit.streak += 1
+        }
+        else if(diff >1){
+            habit.streak =1
+        }
+    }
+    habit.lastCompleted = today;
+}
+
+onMounted(()=>{
+    const saved = localStorage.getItem('habits');
+
+    if(saved){
+        habitList.value = JSON.parse(saved);
+    }
+})
+
+watch(habitList , ()=>{
+    showStatus.value=true;
+    saveStatus.value= 'Saving....';
+    
+    setTimeout(() => {
+        localStorage.setItem('habits', JSON.stringify(habitList.value));
+        saveStatus.value = 'Saved ✓'
+    },300);
+
+    setTimeout(() => {
+        showStatus.value = false
+    }, 1400);
+
+}, {deep:true})
 
 </script>
 
@@ -36,13 +100,31 @@ const addHabit =()=>{
             No habits yet. Start with one ✨
         </p>
 
+        <h3>Your habit list:</h3>
+        <!-- <p>Completed: {{ completedHabits }}</p> -->
+
+        <div class="save-dropdown" v-if="showStatus">
+            {{ saveStatus }}
+        </div>
+
         <ul>
-            <p>Your habit list:</p>
             <li v-for="value in habitList" :key="value.id" class="item">
-                <input type="checkbox" v-model="value.done">
+
+                <input type="checkbox"
+                 v-model="value.done"
+                 @change="updateStreak(value)">
+
                 <span :class="{done: value.done}">
                     {{ value.title }}
                 </span>
+
+                <span class="streak">
+                    🔥 {{ value.streak }}
+                </span>
+
+                <button class="delete" @click="deleteHabit(value.id)">
+                    ❌
+                </button>
             </li>
         </ul>
     </div>
@@ -50,98 +132,177 @@ const addHabit =()=>{
 </template>
 
 <style scoped>
-.app-container{
-    background: #0e173f;
+/* 1. Define a color palette with CSS Variables */
+.app-container {
+    --primary-dark: #0e173f;
+    --primary-light: whitesmoke;
+    --accent-color: #4a90e2; /* A slightly brighter blue for interaction */
+    --text-light: #ffffff;
+    --text-dark: #0e173f;
+    --shadow-color: rgba(0, 0, 0, 0.2);
+    --border-color: #ccc;
+    --danger-color: #e74c3c; /* For potential delete buttons */
+
+    background: var(--primary-dark);
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: center;
     min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-.app-card{
+.app-card {
     width: 360px;
-    background: whitesmoke;
-    padding: 30px;
-    border-radius: 10px;
+    background: var(--primary-light);
+    padding: 2rem; 
+    border-radius: 12px;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 8px 24px var(--shadow-color);
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 1rem; 
+    position: relative;
 }
 
-h1{
-    margin-bottom: 25px;
-    color: #0e173f;
+h1 {
+    margin-bottom: 1.5rem;
+    color: var(--text-dark);
+    font-weight: 700;
 }
 
-input{
-    /* width: 100%; */
-    padding:12px;
-    border-radius: 9px;
-    border: 1px solid rgb(11, 7, 40);
-    font-size: 20px;
+input[type="text"] {
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    font-size: 1.1rem;
+    transition: border-color 0.3s, box-shadow 0.3s; 
 }
 
-button{
-    width: 100%;
-    padding: 11px;
+
+input[type="text"]:focus-visible {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
+}
+
+button {
+    padding: 0.75rem;
     border-radius: 8px;
     cursor: pointer;
     border: none;
-    background: rgb(15, 35, 72);
-    color: white;
-    font-size: 20px;
+    background: var(--primary-dark);
+    color: var(--text-light);
+    font-size: 1.1rem;
     font-weight: 600;
-    margin-bottom: 15px;
+    margin-bottom: 1rem;
+    transition: background-color 0.3s, transform 0.2s; 
 }
 
-button:hover{
-    opacity: 0.9;
+button:hover {
+    background-color: #1c2a5e; 
+    transform: translateY(-2px);
 }
 
-p{
-    font-size: 20px;
-    color: #0e173f;
+button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
 }
 
-ul{
+p {
+    font-size: 1.1rem;
+    color: var(--text-dark);
+}
+
+ul {
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-.item{
+.item {
     display: flex;
     align-items: center;
-    gap: 7px;
-    padding: 10px;
-    margin: 8px auto;
-    background: #0e173f;
-    color: white;
+    gap: 8px;
+    padding: 12px 16px;
+    margin: 0.5rem auto;
+    background: var(--primary-dark);
+    color: var(--text-light);
     border-radius: 8px;
-    font-size: 18px;
+    font-size: 1rem;
+    transition: transform 0.3s ease-in-out;
 }
 
-.item:hover{
-    transform: translate(-2px);
-    transition: 0.3s;
+.item:hover {
+    transform: scale(1.03); 
 }
 
-.item input[type="checkbox"]{
+.item input[type="checkbox"] {
     transform: scale(1.2);
     cursor: pointer;
+    accent-color: var(--accent-color); 
 }
 
-.empty{
+.item span{
+    flex: 1;
+    text-align: left;
+}
+
+.streak{
+    font-size: 15px;
+    opacity: 0.7;
+}
+
+.save-dropdown{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    background: white;
     color: #0e173f;
-    font-size: 20px;
-    margin-bottom: 11px;
+
+    padding: 6px 12px;
+    border-radius: 5px;
+
+    font-size: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+
+    animation: slideDown 0.25s ease;
 }
 
-.done{
+@keyframes slideDown{
+    from{
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.delete{
+    /* margin-left: auto; */
+    padding-left: 10px;
+    cursor: pointer;
+    border: none;
+    font-size: 16px;
+    background: transparent;
+    transition: transform 0.14s ease;
+}
+
+.delete:hover{
+    transform: scale(1.2);
+}
+
+.empty {
+    color: var(--text-dark);
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+}
+
+.done {
     text-decoration: line-through;
-    opacity: 0.5;
+    opacity: 0.6;
 }
 </style>
