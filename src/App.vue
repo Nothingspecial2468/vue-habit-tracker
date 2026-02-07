@@ -2,6 +2,7 @@
 import { ref , computed , onMounted , watch} from 'vue';
 const title = ref('Habit Tracker');
 const habit = ref('')
+const warningMsge = ref('');
 
 const habitList = ref([
 ]);
@@ -12,7 +13,12 @@ const showStatus = ref(false);
 const addHabit =()=>{
     const value = habit.value.trim();
 
-    if(!value) return
+    if(!value){
+        warningMsge.value = "Please enter a habit first!";
+        return;
+    }
+
+    warningMsge.value = "";
 
     habitList.value.push({
         id: Date.now(),
@@ -91,9 +97,14 @@ watch(habitList , ()=>{
     <div class="app-card">
         <h1>{{ title }}</h1>
         <input v-model="habit" 
+        @input="warningMsge = ''"
         @keyup.enter = "addHabit"
         type="text" placeholder="Enter your habit here....">
     
+        <p v-if="warningMsge" class="warning">
+            {{ warningMsge }}
+        </p>
+
         <button @click="addHabit">Add Habit</button>
 
         <p v-if="!habitList.length" class="empty">
@@ -207,6 +218,13 @@ button:hover {
 button:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
+}
+
+.warning{
+    color: #e74c3c;
+  font-size: 0.9rem;
+  margin: 6px 0;
+
 }
 
 p {
