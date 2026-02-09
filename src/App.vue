@@ -7,6 +7,23 @@ const warningMsge = ref('');
 const habitList = ref([
 ]);
 
+const totalHabits = computed(()=>
+    habitList.value.length
+);
+
+const consistentHabits = computed(()=>{
+    habitList.value.filter(h=> h.streak >=3).length
+});
+
+const buildingHabits = computed(()=>{
+    habitList.value.filter(h=> h.streak < 3).length
+});
+
+const bestStreak = computed(()=>{
+    habitList.value.length ? Math.max(...habitList.value.map(h=> h.streak))
+    : 0
+});
+
 const saveStatus = ref('Saved ✓');
 const showStatus = ref(false);
 
@@ -35,14 +52,6 @@ const addHabit =()=>{
 function deleteHabit(id) {
     return habitList.value = habitList.value.filter(h => h.id !== id);
 }
-
-// const completedHabits= computed(()=>{
-//     habitList.value.filter(h=> h.done).length;
-// });
-
-// const remainingCount = ()=>{
-//     habitList.value.length - completedHabits()
-// }
 
 function updateStreak(habit){
     if(!habit.done) return;
@@ -112,7 +121,16 @@ watch(habitList , ()=>{
         </p>
 
         <h3>Your habit list:</h3>
-        <!-- <p>Completed: {{ completedHabits }}</p> -->
+        
+        <div class="status">
+            <div class="stat">📋 Total: {{ totalHabits }}</div>
+            <div class="stat">🔥 Consistent: {{ consistentHabits }}</div>
+            <div class="stat">🌱 Building: {{ buildingHabits }}</div>
+            <div class="stat">🏆 Best: 
+                <span v-if="bestStreak">{{ bestStreak }} days</span>
+                <span v-else>Start today 🚀</span>
+            </div>
+        </div>
 
         <div class="save-dropdown" v-if="showStatus">
             {{ saveStatus }}
@@ -236,6 +254,22 @@ ul {
     list-style: none;
     margin: 0;
     padding: 0;
+}
+
+.status{
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    justify-content: center;
+}
+
+.stat{
+    background: #e6ecff;
+    padding: 6px 10px;
+    border-radius: 7px;
+    font-size: 15px;
+    font-weight: 600;
 }
 
 .item {
