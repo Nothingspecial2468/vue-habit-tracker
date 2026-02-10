@@ -24,6 +24,18 @@ const bestStreak = computed(()=>{
     : 0
 });
 
+const computedMessage = computed(()=>{
+    if(totalHabits.value === 0 ){
+        return "Let's start with small things.";
+    }
+
+    if(consistentHabits.value >0){
+        return "🔥 You’re building real consistency. Keep going!";
+    }
+
+    return "🌱 Small steps daily. Your streak begins now.";
+});
+
 const saveStatus = ref('Saved ✓');
 const showStatus = ref(false);
 
@@ -130,6 +142,7 @@ watch(habitList , ()=>{
                 <span v-if="bestStreak">{{ bestStreak }} days</span>
                 <span v-else>Start today 🚀</span>
             </div>
+            <p class="message">{{ computedMessage }}</p>
         </div>
 
         <div class="save-dropdown" v-if="showStatus">
@@ -270,6 +283,13 @@ ul {
     border-radius: 7px;
     font-size: 15px;
     font-weight: 600;
+}
+
+.message{
+    font-size: 20px;
+    font-weight: 600;
+    color:#1c2a5e;
+    margin-bottom: 10px;
 }
 
 .item {
