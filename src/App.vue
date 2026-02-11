@@ -1,5 +1,6 @@
 <script setup>
 import { ref , computed , onMounted , watch} from 'vue';
+import HabitItem from './components/HabitItem.vue';
 const title = ref('Habit Tracker');
 const habit = ref('')
 const warningMsge = ref('');
@@ -150,24 +151,13 @@ watch(habitList , ()=>{
         </div>
 
         <ul>
-            <li v-for="value in habitList" :key="value.id" class="item">
-
-                <input type="checkbox"
-                 v-model="value.done"
-                 @change="updateStreak(value)">
-
-                <span :class="{done: value.done}">
-                    {{ value.title }}
-                </span>
-
-                <span class="streak">
-                    🔥 {{ value.streak }}
-                </span>
-
-                <button class="delete" @click="deleteHabit(value.id)">
-                    ❌
-                </button>
-            </li>
+            <HabitItem
+            v-for="value in habitList"
+            :key="value.id"
+            :habit="value"
+            @delete="deleteHabit"
+            @update-streak="updateStreak"
+            ></HabitItem>
         </ul>
     </div>
   </div>
