@@ -30,4 +30,47 @@ const emit = defineEmits(['delete', 'update-streak'])
 </template>
 
 <style scoped>
+.item{
+    display: flex;
+    align-items: center;
+    justify-content:space-evenly;
+    gap: 9px;
+    padding: 10px;
+    background: var(--primary-dark);
+    color: var(--primary-light);
+    border-radius: 6px;
+}
+
+.item:hover{
+    transform: translateY(-2px);
+}
+
+.item span{
+    flex: 1;
+    text-align: left;
+}
+
+.streak{
+    opacity: 0.7;
+    font-size: 0.9rem;
+}
+
+.done{
+    text-decoration: line-through;
+    color: var(--primary-light);
+    opacity: 0.5;
+}
+
+.delete{
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    font-size: 0.7rem;
+    transition: transform 0.2s ease-in-out;
+}
+
+.delete:hover{
+    transform: scale(1.2);
+}
+
 </style>

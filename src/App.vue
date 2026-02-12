@@ -13,16 +13,22 @@ const totalHabits = computed(()=>
 );
 
 const consistentHabits = computed(()=>{
-    habitList.value.filter(h=> h.streak >=3).length
+    return habitList.value.filter(h=> h.streak >=3).length
 });
 
 const buildingHabits = computed(()=>{
-    habitList.value.filter(h=> h.streak < 3).length
+    return habitList.value.filter(h=> h.streak < 3).length
 });
 
 const bestStreak = computed(()=>{
-    habitList.value.length ? Math.max(...habitList.value.map(h=> h.streak))
+    return habitList.value.length ? Math.max(...habitList.value.map(h=> h.streak))
     : 0
+});
+
+const STREAK_GOAL = 7;
+
+const streakProgress = computed(()=>{
+    return Math.min((bestStreak.value / STREAK_GOAL) *100, 100);
 });
 
 const computedMessage = computed(()=>{
@@ -144,6 +150,16 @@ watch(habitList , ()=>{
                 <span v-else>Start today 🚀</span>
             </div>
             <p class="message">{{ computedMessage }}</p>
+        </div>
+
+        <div class="streak-bar">
+            <div class="streak-fill"
+            :style="{width: streakProgress + '%'}">
+            </div>
+        </div>
+
+        <div class="streak-text">
+            {{ bestStreak }} / 7 days
         </div>
 
         <div class="save-dropdown" v-if="showStatus">
@@ -280,6 +296,27 @@ ul {
     font-weight: 600;
     color:#1c2a5e;
     margin-bottom: 10px;
+}
+
+.steak-bar{
+    width: 100%;
+    height: 10px;
+    background: #b9c3c9;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 8px 0;
+}
+
+.streak-fill{
+    height: 100%;
+    background: #4a90e2;
+    transition: width 0.3s ease-in-out;
+}
+
+.streak-text{
+    font-size: 14px;
+    color: var(--text-dark);
+    font-weight: 600;
 }
 
 .item {
