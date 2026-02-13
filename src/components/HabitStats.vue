@@ -30,7 +30,7 @@ const props = defineProps({
     margin: 12px 0;
     padding: 11px;
     border-radius: 9px;
-    background: #eef2f2;
+    background: #bab8df;
     color: var(--text-dark);
 }
 

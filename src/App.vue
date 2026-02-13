@@ -2,6 +2,8 @@
 import { ref , computed , onMounted , watch} from 'vue';
 import HabitItem from './components/HabitItem.vue';
 import HabitStats from './components/HabitStats.vue';
+import HabitInput from './components/HabitInput.vue';
+import StreakBar from './components/StreakBar.vue';
 
 const title = ref('Habit Tracker');
 const habit = ref('')
@@ -48,25 +50,14 @@ const computedMessage = computed(()=>{
 const saveStatus = ref('Saved ✓');
 const showStatus = ref(false);
 
-const addHabit =()=>{
-    const value = habit.value.trim();
-
-    if(!value){
-        warningMsge.value = "Please enter a habit first!";
-        return;
-    }
-
-    warningMsge.value = "";
-
+const addHabit =(title)=>{
     habitList.value.push({
-        id: Date.now(),
-        title: value,
+        id:Date.now(),
+        title,
         done: false,
-        lastCompleted : null,
-        streak : 0
-    });
-
-    habit.value = "";
+        lastCompleted: null,
+        streak:0
+    })
 }
 
 
@@ -125,17 +116,8 @@ watch(habitList , ()=>{
 <template>
   <div class="app-container">
     <div class="app-card">
-        <h1>{{ title }}</h1>
-        <input v-model="habit" 
-        @input="warningMsge = ''"
-        @keyup.enter = "addHabit"
-        type="text" placeholder="Enter your habit here....">
-    
-        <p v-if="warningMsge" class="warning">
-            {{ warningMsge }}
-        </p>
-
-        <button @click="addHabit">Add Habit</button>
+        <h1>Habit Tracker</h1>
+        <HabitInput @add="addHabit"></HabitInput>
 
         <p v-if="!habitList.length" class="empty">
             No habits yet. Start with one ✨
@@ -151,15 +133,11 @@ watch(habitList , ()=>{
         :message="computedMessage">
         </HabitStats>
 
-        <div class="streak-bar">
-            <div class="streak-fill"
-            :style="{width: streakProgress + '%'}">
-            </div>
-        </div>
-
-        <div class="streak-text">
-            {{ bestStreak }} / 7 days
-        </div>
+        <StreakBar
+        :total="totalHabits"
+        :consistent="consistentHabits"
+        :building="buildingHabits">
+        </StreakBar>
 
         <div class="save-dropdown" v-if="showStatus">
             {{ saveStatus }}
@@ -213,7 +191,7 @@ watch(habitList , ()=>{
 }
 
 h1 {
-    margin-bottom: 1.5rem;
+    margin-bottom: 10px;
     color: var(--text-dark);
     font-weight: 700;
 }
