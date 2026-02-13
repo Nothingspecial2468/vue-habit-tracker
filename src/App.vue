@@ -1,6 +1,8 @@
 <script setup>
 import { ref , computed , onMounted , watch} from 'vue';
 import HabitItem from './components/HabitItem.vue';
+import HabitStats from './components/HabitStats.vue';
+
 const title = ref('Habit Tracker');
 const habit = ref('')
 const warningMsge = ref('');
@@ -141,16 +143,13 @@ watch(habitList , ()=>{
 
         <h3>Your habit list:</h3>
         
-        <div class="status">
-            <div class="stat">📋 Total: {{ totalHabits }}</div>
-            <div class="stat">🔥 Consistent: {{ consistentHabits }}</div>
-            <div class="stat">🌱 Building: {{ buildingHabits }}</div>
-            <div class="stat">🏆 Best: 
-                <span v-if="bestStreak">{{ bestStreak }} days</span>
-                <span v-else>Start today 🚀</span>
-            </div>
-            <p class="message">{{ computedMessage }}</p>
-        </div>
+        <HabitStats
+        :total="totalHabits"
+        :consistent="consistentHabits"
+        :building="buildingHabits"
+        :best-streak="bestStreak"
+        :message="computedMessage">
+        </HabitStats>
 
         <div class="streak-bar">
             <div class="streak-fill"
