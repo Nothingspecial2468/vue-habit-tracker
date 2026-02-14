@@ -1,38 +1,70 @@
-# vue-habit-tracker
+# Habit Tracker App
+  A simple habit tracking appliaction built with Vue 3 using component-based architecture.
 
-This template should help get you started developing with Vue 3 in Vite.
+## 🚀 Features
 
-## Recommended IDE Setup
+- Add new habits
+- Delete habits
+- Mark habits as completed
+- Automatic streak calculation
+- Consistency categorization
+- Real-time statistics dashboard
+- Visual streak progress bar
+- Data persistence using localStorage
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+---
 
-## Recommended Browser Setup
+## 🧠 Concepts Practiced
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+- Component-based architecture
+- Single Responsibility Principle
+- Props (data down)
+- Emits (events up)
+- Reactive state and computed properties
+- Clean separation of logic and presentation
+- Local storage integration
 
-## Customize configuration
+---
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## 🏗️ Project Structure
 
-## Project Setup
+src/
+|
+|-- App.vue # Main state & logic
+|
+|-- components/
+| |--HabitInput.vue # Handles user input
+| |--HabitItem.vue # Single habit item
+| |--HabitStats.vue # Displays computed statistics
+| |--StreakBar.vue # Visual progress bar
 
-```sh
-npm install
-```
 
-### Compile and Hot-Reload for Development
+---
 
-```sh
-npm run dev
-```
+## 🔁 Data Flow
 
-### Compile and Minify for Production
+- State is managed in **App.vue**
+- Data flows down via **props**
+- User actions flow up via **emits**
+- UI updates reactively using computed properties
 
-```sh
-npm run build
-```
+---
+
+## 💾 Persistence
+
+All habit data is stored in the browser using `localStorage`, ensuring the data remains after page refresh.
+
+---
+
+## 📌 Version
+
+**v1.0 – Stable and Refactored**
+
+Core functionality complete.  
+Application structured into clean, responsibility-based components.
+
+---
+
+## 🎯 Purpose
+
+This project was built to move from basic feature implementation to understanding structured component design in Vue.

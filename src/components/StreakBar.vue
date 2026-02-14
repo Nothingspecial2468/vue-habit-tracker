@@ -1,11 +1,16 @@
 <script setup>
+import { computed } from 'vue';
+
 const props = defineProps({
     total:Number,
     consistent: Number,
     building: Number
 });
 
-const percent = props.total ? Math.round((props.consistent / props.total) *100) : 0;
+const percent = computed(()=>{
+    return props.total ? Math.round((props.consistent / props.total) *100) : 0;
+});
+
 </script>
 
 <template>
